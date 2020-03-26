@@ -1,20 +1,19 @@
-# fluent-plugin-parser_cef
+# fluent-plugin-filter-cef
 
-[![Gem Version](https://badge.fury.io/rb/fluent-plugin-parser_cef.svg)](https://badge.fury.io/rb/fluent-plugin-parser_cef)
-[![Build Status](https://travis-ci.org/lunardial/fluent-plugin-parser_cef.svg?branch=master)](https://travis-ci.org/lunardial/fluent-plugin-parser_cef)
-[![Maintainability](https://api.codeclimate.com/v1/badges/9dc37fceb1caff2c0070/maintainability)](https://codeclimate.com/github/lunardial/fluent-plugin-parser_cef/maintainability)
-[![Coverage Status](https://coveralls.io/repos/github/lunardial/fluent-plugin-parser_cef/badge.svg?branch=master)](https://coveralls.io/github/lunardial/fluent-plugin-parser_cef?branch=master)
-[![downloads](https://img.shields.io/gem/dt/fluent-plugin-parser_cef.svg)](https://rubygems.org/gems/fluent-plugin-parser_cef)
+[![Gem Version](https://badge.fury.io/rb/fluent-plugin-filter-cef.svg)](https://badge.fury.io/rb/fluent-plugin-filter-cef)
+[![Build Status](https://travis-ci.org/lunardial/fluent-plugin-filter-cef.svg?branch=master)](https://travis-ci.org/lunardial/fluent-plugin-filter-cef)
+[![Maintainability](https://api.codeclimate.com/v1/badges/9dc37fceb1caff2c0070/maintainability)](https://codeclimate.com/github/lunardial/fluent-plugin-filter-cef/maintainability)
+[![Coverage Status](https://coveralls.io/repos/github/lunardial/fluent-plugin-filter-cef/badge.svg?branch=master)](https://coveralls.io/github/lunardial/fluent-plugin-filter-cef?branch=master)
+[![downloads](https://img.shields.io/gem/dt/fluent-plugin-filter-cef.svg)](https://rubygems.org/gems/fluent-plugin-filter-cef)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-Fluentd Parser plugin to parse CEF - common event format -
+Fluentd Filter plugin to parse CEF - Common Event Format
 
 ## Requirements
 
-| fluent-plugin-parser_cef  | fluentd | ruby |
+| fluent-plugin-filter-cef  | fluentd | ruby |
 |---------------------------|---------|------|
 | >= 1.0.0 | >= v0.14.0 | >= 2.1 |
-|  < 1.0.0 | >= v0.12.0 | >= 1.9 |
 
 ## Installation
 
@@ -22,54 +21,40 @@ Add this line to your application's Gemfile:
 
 ```bash
 # for fluentd v0.12
-gem install fluent-plugin-parser_cef -v "< 1.0.0"
+gem install fluent-plugin-filter-cef -v "< 1.0.0"
 
 # for fluentd v0.14 or higher
-gem install fluent-plugin-parser_cef
+gem install fluent-plugin-filter-cef
 
 # for td-agent2
-td-agent-gem install fluent-plugin-parser_cef -v "< 1.0.0"
+td-agent-gem install fluent-plugin-filter-cef -v "< 1.0.0"
 
 # for td-agent3
-td-agent-gem install fluent-plugin-parser_cef
+td-agent-gem install fluent-plugin-filter-cef
 ```
 
 ## Usage
 
 ```
-<source>
-  @type   tail
-  tag     develop.cef
-  path      /tmp/fluentd/test.log
-  pos_file  /tmp/fluentd/test.pos
-
-  format  cef
-  #log_format  syslog
-  #syslog_timestamp_format  '\w{3}\s+\d{1,2}\s\d{2}:\d{2}:\d{2}'
-  #cef_version  0
-  #parse_strict_mode  true
-  #cef_keyfilename  'config/cef_version_0_keys.yaml'
-  #output_raw_field  false
-</source>
+<filter **>
+  @type cef
+  # message_key message
+  # reserve_data false
+  # cef_version 0
+  # parse_strict_mode true
+  # cef_keyfilename 'config/cef_version_0_keys.yaml'
+</filter>
 ```
 
 ## parameters
 
-* `log_format` (default: syslog)
+* `message_key` (default: message)
 
-  input log format, currently only 'syslog' is valid
+  the key to parse the CEF message from
 
-* `log_utc_offset` (default: nil)
+* `reserve_data` (default: false)
 
-  set log utc_offset if each record does not have timezone information and the timezone is not local timezone
-
-  if log_utc_offset set to nil or invalid value, then use system timezone
-
-  if a log have timezone information, log_utc_offset is ignored
-
-* `syslog_timestamp` (default: '\w{3}\s+\d{1,2}\s\d{2}:\d{2}:\d{2}')
-
-  syslog timestamp format, the default is traditional syslog timestamp
+  whether or not keep the raw CEF message once parsed or not
 
 * `cef_version` (default: 0)
 
@@ -86,10 +71,6 @@ td-agent-gem install fluent-plugin-parser_cef
 * `cef_keyfilename` (default: 'config/cef_version_0_keys.yaml')
 
   used when parse_strict_mode is true, this is the array of the valid CEF keys
-
-* `output_raw_field` (default: false)
-
-  append {"raw":\<message itself\>} key-value even if success parsing
 
 ## License
 
